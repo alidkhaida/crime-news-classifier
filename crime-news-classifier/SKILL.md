@@ -38,22 +38,25 @@ Load only the material required for the current stage:
 6. Load `references/policy-boundary.md` only for final inclusion/exclusion decisions.
 7. Load `references/local-state.md` for cache, resume, version, and recovery work.
 8. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
+9. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
 
 Do not put the complete taxonomy or article text into every AI prompt. Local code narrows candidate categories first; AI receives only the record fields and relevant excerpts.
 
 ## Workflow
 
 1. Resolve the target spreadsheet, visible tab name, headers, and exact physical range.
-2. Read the bounded source range and current result range before changing anything.
-3. Normalize each URL into `url_key`; retain `original_url`.
-4. Check local state. Reuse an existing metadata result or saved article when URL, input fingerprint, taxonomy version, and policy version permit reuse.
-5. Run the metadata pass on title, URL slug, and description.
-6. Route each record to `crime`, `noncrime`, or `needs_article`.
-7. Fetch only `needs_article` records and save fetched text and manifest locally.
-8. Assign every supported substantive and contextual category, then map supported subcategories.
-9. Capture confidence, evidence phrases, case stage, allegation status, and unmapped candidates.
-10. Validate locally, save the complete result record, and only then prepare Sheet values.
-11. If writeback is authorized, have the Sheet worker write only the exact output range and verify it by reread.
+2. Run the preflight and obtain a run-scoped receipt for the exact tab, rows, stages, and capabilities.
+3. Verify the receipt before every worker dispatch and every external or persistent side effect.
+4. Read the bounded source range and current result range before changing anything.
+5. Normalize each URL into `url_key`; retain `original_url`.
+6. Check local state. Reuse an existing metadata result or saved article when URL, input fingerprint, taxonomy version, and policy version permit reuse.
+7. Run the metadata pass on title, URL slug, and description.
+8. Route each record to `crime`, `noncrime`, or `needs_article`.
+9. Fetch only `needs_article` records and save fetched text and manifest locally.
+10. Assign every supported substantive and contextual category, then map supported subcategories.
+11. Capture confidence, evidence phrases, case stage, allegation status, and unmapped candidates.
+12. Validate locally, save the complete result record, and only then prepare Sheet values.
+13. If writeback is authorized, have the Sheet worker write only the exact output range and verify it by reread.
 
 ## Worker routing
 
@@ -86,5 +89,7 @@ Before writeback, validate row count, physical-row identity, URL/title identity,
 Run `scripts/validate_result.py` against staged result JSON before using it for a Sheet write. Run `scripts/normalize_url.py` for deterministic cache-key generation.
 
 If a worker fails, preserve the manifest and partial state. Resume only the failed stage. A taxonomy update should reclassify from saved article text without refetching.
+
+The preflight receipt is a workflow gate, not a credential. If the runtime supports real per-worker tool ACLs, enforce the receipt there too. If it does not, the controller must refuse unauthorized stages and treat the worker contracts as hard behavioral boundaries.
 
 After an explicitly requested test-learning update, append a concise dated entry to `memory/WORKFLOW_MEMORY.md`. Do not rewrite prior entries; record the evidence, decision, and whether the rule is provisional or stable.

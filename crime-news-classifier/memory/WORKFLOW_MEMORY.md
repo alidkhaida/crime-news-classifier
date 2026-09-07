@@ -13,6 +13,7 @@ This is local project memory for tested workflow decisions and observed edge cas
 - Preserve unmapped subcategory candidates for later taxonomy review.
 - Keep factual classification separate from final inclusion/exclusion policy.
 - Confidence is an operational routing/audit signal, not proof; retain it locally and during pilot Sheet testing.
+- Every run requires a run-scoped permission receipt covering the exact tab, physical rows, stages, and capabilities; verify it before each worker dispatch or side effect. The receipt is a workflow gate, not a substitute for runtime tool ACLs.
 
 ## Confirmed pilot learnings
 

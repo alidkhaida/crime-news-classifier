@@ -2,6 +2,16 @@
 
 The controller owns the run ledger, physical-row mapping, URL cache, stage transitions, final aggregation, and worker result joins. Workers are narrow and non-overlapping.
 
+## Preflight gate
+
+Before dispatch, the controller must have a valid run-scoped receipt from `scripts/preflight.py`. It verifies the receipt for the exact stage, capability, tab, and physical row bounds. A missing, expired, denied, or scope-mismatched receipt blocks the operation.
+
+The effective worker permissions are:
+
+`approved capabilities from receipt ∩ worker role allowlist ∩ current stage requirements`
+
+The worker receives no other tools or data. A receipt does not itself grant OS, connector, browser, or network access; runtimes should enforce those permissions independently. If runtime enforcement is unavailable, the controller must fail closed and reject unauthorized worker outputs or side effects.
+
 ## Permission matrix
 
 | Worker | Local read | Local write | Article/network | Sheets read | Sheets write | AI decision |
