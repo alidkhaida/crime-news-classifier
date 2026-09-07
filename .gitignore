@@ -1,0 +1,19 @@
+# Local classification runs and generated state
+.classification_runs/
+crime-news-classifier/memory/runs/
+
+# Python caches and local databases
+**/__pycache__/
+**/*.pyc
+**/*.sqlite
+**/*.sqlite-*
+**/*.db
+**/*.db-*
+
+# Secrets, browser state, and temporary outputs
+.env
+.env.*
+**/browser-state/
+**/browser-profile/
+**/tmp/
+**/temp/

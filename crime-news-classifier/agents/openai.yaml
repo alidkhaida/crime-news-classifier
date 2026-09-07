@@ -1,0 +1,7 @@
+interface:
+  display_name: "Crime News Classifier"
+  short_description: "Classify crime news links efficiently"
+  default_prompt: "Use $crime-news-classifier to classify this bounded news-link range with metadata-first routing and verified results."
+
+policy:
+  allow_implicit_invocation: true

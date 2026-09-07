@@ -1,0 +1,23 @@
+# Local run state and generated artifacts
+.classification_runs/
+memory/runs/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm
+__pycache__/
+*.pyc
+
+# Secrets and browser/fetcher state
+*.env
+*.token
+*credentials*
+*oauth*
+browser-profile/
+cdp-profile/
+
+# Temporary outputs
+tmp/
+cache/
