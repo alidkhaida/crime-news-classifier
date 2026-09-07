@@ -39,24 +39,27 @@ Load only the material required for the current stage:
 7. Load `references/local-state.md` for cache, resume, version, and recovery work.
 8. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
 9. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
+10. Load `references/context-lifecycle.md` when activating the skill, managing compaction, or delegating workers.
 
 Do not put the complete taxonomy or article text into every AI prompt. Local code narrows candidate categories first; AI receives only the record fields and relevant excerpts.
 
 ## Workflow
 
-1. Resolve the target spreadsheet, visible tab name, headers, and exact physical range.
-2. Run the preflight and obtain a run-scoped receipt for the exact tab, rows, stages, and capabilities.
-3. Verify the receipt before every worker dispatch and every external or persistent side effect.
-4. Read the bounded source range and current result range before changing anything.
-5. Normalize each URL into `url_key`; retain `original_url`.
-6. Check local state. Reuse an existing metadata result or saved article when URL, input fingerprint, taxonomy version, and policy version permit reuse.
-7. Run the metadata pass on title, URL slug, and description.
-8. Route each record to `crime`, `noncrime`, or `needs_article`.
-9. Fetch only `needs_article` records and save fetched text and manifest locally.
-10. Assign every supported substantive and contextual category, then map supported subcategories.
-11. Capture confidence, evidence phrases, case stage, allegation status, and unmapped candidates.
-12. Validate locally, save the complete result record, and only then prepare Sheet values.
-13. If writeback is authorized, have the Sheet worker write only the exact output range and verify it by reread.
+1. Activate this skill once per session using the activation registry; preserve its context marker through compaction.
+2. Resolve the target spreadsheet, visible tab name, headers, and exact physical range.
+3. Run the preflight and obtain a run-scoped receipt for the exact tab, rows, stages, and capabilities.
+4. Build one least-privilege worker envelope per delegated stage.
+5. Verify the receipt and envelope before every worker dispatch and every external or persistent side effect.
+6. Read the bounded source range and current result range before changing anything.
+7. Normalize each URL into `url_key`; retain `original_url`.
+8. Check local state. Reuse an existing metadata result or saved article when URL, input fingerprint, taxonomy version, and policy version permit reuse.
+9. Run the metadata pass on title, URL slug, and description.
+10. Route each record to `crime`, `noncrime`, or `needs_article`.
+11. Fetch only `needs_article` records and save fetched text and manifest locally.
+12. Assign every supported substantive and contextual category, then map supported subcategories.
+13. Capture confidence, evidence phrases, case stage, allegation status, and unmapped candidates.
+14. Validate each worker result before merging; then save the complete result record before preparing Sheet values.
+15. If writeback is authorized, have only the Sheet worker write the exact output range and verify it by reread.
 
 ## Worker routing
 
@@ -70,6 +73,8 @@ Use isolated workers when available:
 - `taxonomy_worker`: reviews unmapped candidates and proposes taxonomy additions or merges. It must not silently promote candidates.
 
 Workers receive only their assigned row payload, relevant references, and controller-supplied state. The controller owns persistence, joins results by `url_key` and physical row, validates them, and decides whether the next stage is allowed.
+
+Use `scripts/worker_protocol.py` to build and validate delegation envelopes. A worker is not considered delegated merely because its role is documented; the host must launch it with the envelope's effective tool allowlist and return its result for validation.
 
 ## Output rendering
 
