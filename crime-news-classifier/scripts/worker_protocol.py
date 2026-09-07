@@ -18,6 +18,7 @@ ROLE_CAPABILITIES = {
     "metadata_worker": {"local_state_read", "ai_decision"},
     "article_fetch_worker": {"article_fetch", "local_state_read", "local_state_write"},
     "category_worker": {"local_state_read", "ai_decision"},
+    "bad_category_worker": {"local_state_read", "ai_decision"},
     "policy_worker": {"local_state_read", "ai_decision"},
     "taxonomy_worker": {"local_state_read", "local_state_write", "taxonomy_write", "ai_decision"},
 }
@@ -27,17 +28,19 @@ ROLE_TOOLS = {
     "metadata_worker": ["local.read", "ai.classify"],
     "article_fetch_worker": ["article.fetch_assigned", "local.read", "local.write"],
     "category_worker": ["local.read", "ai.classify"],
+    "bad_category_worker": ["local.read", "ai.classify"],
     "policy_worker": ["local.read", "ai.classify"],
     "taxonomy_worker": ["local.read", "local.write_proposal", "ai.classify"],
 }
 
 ROLE_REFERENCES = {
     "sheet_worker": ["references/worker-contracts.md", "references/output-schema.md", "references/preflight.md"],
-    "metadata_worker": ["references/worker-contracts.md", "references/taxonomy-routing.md"],
+    "metadata_worker": ["references/worker-contracts.md", "references/primary-taxonomy.md", "references/category-selection.md"],
     "article_fetch_worker": ["references/worker-contracts.md", "references/local-state.md"],
-    "category_worker": ["references/worker-contracts.md", "references/output-schema.md", "references/taxonomy-routing.md"],
+    "category_worker": ["references/worker-contracts.md", "references/output-schema.md", "references/primary-taxonomy.md", "references/category-selection.md"],
+    "bad_category_worker": ["references/worker-contracts.md", "references/output-schema.md", "references/bad-taxonomy.md"],
     "policy_worker": ["references/worker-contracts.md", "references/output-schema.md", "references/policy-boundary.md"],
-    "taxonomy_worker": ["references/worker-contracts.md", "references/local-state.md", "references/taxonomy-routing.md"],
+    "taxonomy_worker": ["references/worker-contracts.md", "references/local-state.md", "references/primary-taxonomy.md", "references/category-selection.md"],
 }
 
 ROLE_STAGE_REQUIREMENTS = {
@@ -45,6 +48,7 @@ ROLE_STAGE_REQUIREMENTS = {
     "metadata_worker": {"metadata": {"local_state_read", "ai_decision"}},
     "article_fetch_worker": {"article_fetch": {"article_fetch", "local_state_read", "local_state_write"}},
     "category_worker": {"category": {"local_state_read", "ai_decision"}},
+    "bad_category_worker": {"bad_category": {"local_state_read", "ai_decision"}},
     "policy_worker": {"policy": {"local_state_read", "ai_decision"}},
     "taxonomy_worker": {"taxonomy": {"local_state_read", "local_state_write", "taxonomy_write", "ai_decision"}},
 }

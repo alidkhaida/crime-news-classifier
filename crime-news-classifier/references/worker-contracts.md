@@ -21,6 +21,7 @@ The worker receives no other tools or data. A receipt does not itself grant OS, 
 | Metadata worker | assigned row payload, taxonomy index | none | no | no | no | crime gate/candidates |
 | Article-fetch worker | assigned URLs, fetch config | article text, manifest | assigned URLs only | no | no | no |
 | Category worker | assigned record, relevant taxonomy excerpts | none | no | no | no | categories/subcategories |
+| Bad-category worker | assigned record, bad taxonomy excerpts | none | no | no | no | bad categories/subcategories |
 | Policy worker | completed record, policy rules | none | no | no | no | final selection only |
 | Taxonomy worker | grouped unmapped candidates | taxonomy proposals only | no | no | no | merge/new-candidate recommendation |
 
@@ -34,6 +35,7 @@ When the runtime supports per-worker tool selection, apply these allowlists:
 - `metadata_worker`: local deterministic scripts and its assigned payload only. No web tools, Drive tools, or Sheet tools.
 - `article_fetch_worker`: the configured article-fetch route or `web__run` for assigned URLs only. No Sheet tools and no classification references beyond fetch identity instructions.
 - `category_worker`: local read-only reference access and its assigned payload only. No web tools, Drive tools, or Sheet tools.
+- `bad_category_worker`: local read-only access to `references/bad-taxonomy.md` and its assigned payload only. No web tools, Drive tools, or Sheet tools.
 - `policy_worker`: local read-only access to `references/policy-boundary.md` and completed records only. No web tools or Sheet tools.
 - `taxonomy_worker`: local read-only taxonomy and candidate-ledger access, with proposal-file write access only. No web tools or Sheet tools.
 - `controller`: local state/manifest tools and read-only Sheet metadata/range tools for orchestration; delegate Sheet mutation to `sheet_worker`.
@@ -75,9 +77,19 @@ It must not turn blocked access, DNS failure, browser failure, or rate limiting 
 
 Input: metadata result or saved article text, relevant category references, and output schema.
 
-Output: all supported substantive categories, context categories, subcategories, case stage, allegation status, evidence spans, confidence, and unmapped candidates.
+Output: all supported Good Categories, context categories, subcategories, case stage, allegation status, evidence spans, confidence, and good unmapped candidates.
 
 Main categories are additive. A formal charge is evidence, not a limit on factual category assignment.
+
+The category worker must fail closed on taxonomy gaps: it must not select a neighboring or “closest” parent merely to avoid a blank category. If no maintained parent definition fits, return no category, `needs_review: true`, and an unmapped candidate with evidence. Sexual Crimes / Exploitation or CSAM evidence does not qualify for Human Trafficking, Smuggling & Exploitation without evidence of trafficking or commercial exploitation.
+
+## Bad-category worker contract
+
+Input: the assigned record, metadata or saved article evidence, and the relevant sections of `references/bad-taxonomy.md`.
+
+Output: every supported Bad Category and bad subcategory, bad evidence phrases, confidence, and `unmapped_bad_candidates` when a supported bad family lacks a maintained subcategory.
+
+It must not change `crime_status`, Good Categories, source fields, or final selection outcome. It must not infer a bad category from a keyword alone.
 
 ## Policy and taxonomy contracts
 

@@ -24,6 +24,7 @@ STAGE_CAPABILITIES = {
     "metadata": {"sheet_read", "local_state_read", "local_state_write", "ai_decision"},
     "article_fetch": {"article_fetch", "local_state_read", "local_state_write"},
     "category": {"local_state_read", "local_state_write", "ai_decision"},
+    "bad_category": {"local_state_read", "local_state_write", "ai_decision"},
     "policy": {"local_state_read", "local_state_write", "ai_decision"},
     "taxonomy": {"local_state_read", "local_state_write", "taxonomy_write", "ai_decision"},
     "writeback": {"sheet_read", "sheet_write", "local_state_write"},

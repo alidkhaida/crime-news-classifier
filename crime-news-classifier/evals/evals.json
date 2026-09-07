@@ -4,19 +4,19 @@
     {
       "id": "metadata-obvious-noncrime",
       "prompt": "Classify a bounded row containing a human-interest story about a singer winning a recording session. Use title, URL slug, and description first; do not open the article.",
-      "expected_output": "The record is routed to noncrime with empty categories, evidence explaining the human-interest basis, and no article fetch.",
+      "expected_output": "The record is routed to noncrime with empty Good Categories and Bad Categories, evidence explaining the human-interest basis, and no article fetch.",
       "assertions": [
         "No article fetch is performed when metadata clearly establishes noncrime",
-        "The result has no crime category",
+        "The result has no Good Category",
         "The result preserves an evidence phrase and confidence"
       ]
     },
     {
       "id": "additive-child-weapon-context",
       "prompt": "Classify a US article stating that a toddler died after accessing an unattended firearm and the uncle was charged with unlawful firearm possession. Assign all supported categories and use readable subcategory names.",
-      "expected_output": "The result includes both unlawful firearm possession and child dangerous-exposure context, with one line per primary category and no machine codes.",
+      "expected_output": "The result includes both unlawful firearm possession and child dangerous-exposure context in Good Categories, with one line per primary category and no machine codes; Bad Categories are evaluated separately.",
       "assertions": [
-        "Both weapon and child-maltreatment categories are assigned when adult responsibility and dangerous exposure are supported",
+        "Both weapon and Child Neglect, Endangerment & Child Abuse categories are assigned when adult responsibility and dangerous exposure are supported",
         "The category rendering uses human-readable names rather than codes",
         "Each distinct primary category is on its own line"
       ]
@@ -26,9 +26,19 @@
       "prompt": "Classify a federal school-funds fraud article involving wire fraud, kickbacks, an institutional setting, and arrests. Do not run the final client selection policy unless explicitly requested.",
       "expected_output": "The result retains all factual crime and context categories, while any federal/financial outcome is stored separately as a policy-stage result.",
       "assertions": [
-        "Recognition categories are not erased because the case may later be excluded",
+        "Good Categories and any Bad Categories are not erased because the case may later be excluded",
         "Federal/financial is represented as a separate policy result or review flag",
         "The result contains evidence and case-stage information"
+      ]
+    },
+    {
+      "id": "sexual-crime-parent-and-trafficking-boundary",
+      "prompt": "Classify a child-pornography possession or attempted-purchase article under the updated primary taxonomy.",
+      "expected_output": "The result uses Sexual Crimes / Exploitation when supported, does not use Human Trafficking, Smuggling & Exploitation without trafficking or commercial-exploitation evidence, and preserves an unmapped subcategory only if no maintained sexual subcategory fits.",
+      "assertions": [
+        "The updated Sexual Crimes / Exploitation parent is considered",
+        "Human Trafficking is rejected without trafficking or commercial-exploitation evidence",
+        "A taxonomy gap is preserved as an unmapped candidate and explicit review state when the subcategory is not maintained"
       ]
     }
   ]

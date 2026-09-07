@@ -1,9 +1,0 @@
-{
-  "spreadsheet_url": "https://docs.google.com/spreadsheets/d/1jxKR482gOLfo_u3qn0XD_xc25bA7KA2s9XGfJcpnIt0/edit",
-  "spreadsheet_id": "1jxKR482gOLfo_u3qn0XD_xc25bA7KA2s9XGfJcpnIt0",
-  "tab": "kptv_national_news",
-  "source_columns": "A:D",
-  "output_columns": "E:J",
-  "require_explicit_physical_rows": true,
-  "allow_user_override": true
-}

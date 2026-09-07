@@ -2,7 +2,7 @@
 
 Run a preflight before reading a Sheet, fetching an article, invoking a decision worker, writing local state, writing a Sheet, or changing taxonomy files.
 
-Resolve the default spreadsheet and tab from `config/target.json`. The user must still provide explicit physical row bounds for every run. An explicit user target overrides the config for that run and must be reflected in the receipt.
+Resolve the default spreadsheet and tab from the ignored local file `config/target.local.json`, using `config/target.example.json` as the shareable template. The user must still provide explicit physical row bounds for every run. An explicit user target overrides the config for that run and must be reflected in the receipt.
 
 ## Capability meanings
 
@@ -31,7 +31,7 @@ The deterministic helper is `scripts/preflight.py`. Use `request` to create a re
 ```bash
 python3 scripts/preflight.py request \
   --receipt .classification_runs/RUN_ID/preflight.json \
-  --run-id RUN_ID --config config/target.json \
+  --run-id RUN_ID --config config/target.local.json \
   --start-row 2 --end-row 14 \
   --stages metadata,category \
   --grant sheet_read,local_state_read,local_state_write,ai_decision

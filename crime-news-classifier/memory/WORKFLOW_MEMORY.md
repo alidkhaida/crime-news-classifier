@@ -15,7 +15,7 @@ This is local project memory for tested workflow decisions and observed edge cas
 - Confidence is an operational routing/audit signal, not proof; retain it locally and during pilot Sheet testing.
 - Every run requires a run-scoped permission receipt covering the exact tab, physical rows, stages, and capabilities; verify it before each worker dispatch or side effect. The receipt is a workflow gate, not a substitute for runtime tool ACLs.
 - Delegated workers receive a generated envelope with a session-scoped skill context marker, role-specific references, assigned-row scope, effective capabilities, symbolic tools, and required result fields; validate the envelope-bound result before merging.
-- The default target is stored in `config/target.json`; physical rows remain mandatory per run, and explicit user targets override the default only for that run.
+- The private default target is stored in ignored `config/target.local.json`, with `config/target.example.json` as the shareable template; physical rows remain mandatory per run, and explicit user targets override the default only for that run.
 
 ## Confirmed pilot learnings
 

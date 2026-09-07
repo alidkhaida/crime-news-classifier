@@ -1,6 +1,7 @@
 # Local run state and generated artifacts
 .classification_runs/
 memory/runs/
+config/target.local.json
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm

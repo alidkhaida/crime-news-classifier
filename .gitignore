@@ -1,6 +1,7 @@
 # Local classification runs and generated state
 .classification_runs/
 crime-news-classifier/memory/runs/
+crime-news-classifier/config/target.local.json
 
 # Python caches and local databases
 **/__pycache__/

@@ -24,30 +24,32 @@ This is a classification and routing skill. It does not automatically decide whe
 - Use full human-readable category and subcategory names in user-facing output. Do not expose codes such as `CN-02`.
 - Put each distinct primary category on its own line. Put multiple subcategories belonging to one primary category on the same line, separated by commas.
 - Do not force a record into an existing subcategory. Save an `unmapped_candidate` with evidence when the taxonomy lacks a suitable match.
-- Keep classification separate from final inclusion/exclusion policy.
+- Do not force a record into an existing parent category either. A parent is valid only when its maintained definition is supported by the evidence; semantic similarity or a keyword match is not enough. If no parent fits, leave the category rendering blank, set `needs_review: true`, and preserve the candidate as `unmapped_candidate`.
+- Keep factual Good Categories, editorial Bad Categories, and final inclusion/exclusion policy separate.
 
 ## Progressive disclosure
 
 Load only the material required for the current stage:
 
 1. Load this file for routing and boundaries.
-2. Load `references/configuration.md` and `config/target.json` when resolving the default spreadsheet target.
+2. Load `references/configuration.md` and the ignored local `config/target.local.json` when resolving the default spreadsheet target; use `config/target.example.json` only as a setup template.
 3. Load `references/worker-contracts.md` when delegating or coordinating workers.
 4. Load `references/output-schema.md` before producing or validating results.
 5. Load `references/taxonomy-routing.md` for category selection.
-6. Load only the relevant category sections from the archived taxonomy and subcategory guide.
-7. Load `references/policy-boundary.md` only for final inclusion/exclusion decisions.
-8. Load `references/local-state.md` for cache, resume, version, and recovery work.
-9. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
-10. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
-11. Load `references/context-lifecycle.md` when activating the skill, managing compaction, or delegating workers.
+6. Load the relevant sections from `references/primary-taxonomy.md` and `references/category-selection.md`; do not load legacy archive taxonomy files for category selection.
+7. Load `references/bad-taxonomy.md` only for the bad-category stage.
+8. Load `references/policy-boundary.md` only for final inclusion/exclusion decisions.
+9. Load `references/local-state.md` for cache, resume, version, and recovery work.
+10. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
+11. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
+12. Load `references/context-lifecycle.md` when activating the skill, managing compaction, or delegating workers.
 
 Do not put the complete taxonomy or article text into every AI prompt. Local code narrows candidate categories first; AI receives only the record fields and relevant excerpts.
 
 ## Workflow
 
 1. Activate this skill once per session using the activation registry; preserve its context marker through compaction.
-2. Resolve the target from `config/target.json`, then apply any explicit user override for spreadsheet, tab, or columns. Require an explicit physical row range for every run.
+2. Resolve the target from `config/target.local.json`, then apply any explicit user override for spreadsheet, tab, or columns. Require an explicit physical row range for every run.
 3. Run the preflight and obtain a run-scoped receipt for the exact tab, rows, stages, and capabilities.
 4. Build one least-privilege worker envelope per delegated stage.
 5. Verify the receipt and envelope before every worker dispatch and every external or persistent side effect.
@@ -57,10 +59,11 @@ Do not put the complete taxonomy or article text into every AI prompt. Local cod
 9. Run the metadata pass on title, URL slug, and description.
 10. Route each record to `crime`, `noncrime`, or `needs_article`.
 11. Fetch only `needs_article` records and save fetched text and manifest locally.
-12. Assign every supported substantive and contextual category, then map supported subcategories.
-13. Capture confidence, evidence phrases, case stage, allegation status, and unmapped candidates.
-14. Validate each worker result before merging; then save the complete result record before preparing Sheet values.
-15. If writeback is authorized, have only the Sheet worker write the exact output range and verify it by reread.
+12. Assign every supported Good Category and matching subcategory.
+13. Assign every supported Bad Category and matching bad subcategory using the separate bad-category stage.
+14. Capture confidence, evidence phrases, case stage, allegation status, and good/bad unmapped candidates.
+15. Validate each worker result before merging, including parent-category semantic fit and unmapped/review consistency; then save the complete result record before preparing Sheet values.
+16. If writeback is authorized, have only the Sheet worker write the exact output range and verify it by reread.
 
 ## Worker routing
 
@@ -70,6 +73,7 @@ Use isolated workers when available:
 - `metadata_worker`: title/slug/description screening and candidate generation. It must not open URLs or write Sheets.
 - `article_fetch_worker`: fetches only assigned URLs, records infrastructure failures, and saves article artifacts. It must not classify or write Sheets.
 - `category_worker`: assigns categories/subcategories from the supplied record and relevant taxonomy excerpts. It must not fetch URLs or access Sheets.
+- `bad_category_worker`: assigns every supported Bad Category and bad subcategory from the supplied record and `references/bad-taxonomy.md`. It must not fetch URLs or access Sheets.
 - `policy_worker`: applies final client inclusion/exclusion rules only when requested. It must not erase category labels.
 - `taxonomy_worker`: reviews unmapped candidates and proposes taxonomy additions or merges. It must not silently promote candidates.
 
@@ -82,8 +86,12 @@ Use `scripts/worker_protocol.py` to build and validate delegation envelopes. A w
 Human-readable category cells use this shape:
 
 ```text
+Good Categories:
 Assault, Weapons & Violent Crime: Nonfatal Shooting, Assault on Officer / First Responder / Protected Worker
 Family, Domestic & Relationship Cases: Intimate-Partner Assault / Strangulation
+
+Bad Categories:
+Court / Sentencing Stories: Sentencing / Resentencing
 ```
 
 Store structured JSON locally even when the Sheet receives a rendered text value.
