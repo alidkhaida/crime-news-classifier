@@ -31,22 +31,23 @@ This is a classification and routing skill. It does not automatically decide whe
 Load only the material required for the current stage:
 
 1. Load this file for routing and boundaries.
-2. Load `references/worker-contracts.md` when delegating or coordinating workers.
-3. Load `references/output-schema.md` before producing or validating results.
-4. Load `references/taxonomy-routing.md` for category selection.
-5. Load only the relevant category sections from the archived taxonomy and subcategory guide.
-6. Load `references/policy-boundary.md` only for final inclusion/exclusion decisions.
-7. Load `references/local-state.md` for cache, resume, version, and recovery work.
-8. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
-9. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
-10. Load `references/context-lifecycle.md` when activating the skill, managing compaction, or delegating workers.
+2. Load `references/configuration.md` and `config/target.json` when resolving the default spreadsheet target.
+3. Load `references/worker-contracts.md` when delegating or coordinating workers.
+4. Load `references/output-schema.md` before producing or validating results.
+5. Load `references/taxonomy-routing.md` for category selection.
+6. Load only the relevant category sections from the archived taxonomy and subcategory guide.
+7. Load `references/policy-boundary.md` only for final inclusion/exclusion decisions.
+8. Load `references/local-state.md` for cache, resume, version, and recovery work.
+9. Load `memory/WORKFLOW_MEMORY.md` before a test or batch run; treat it as tested project context, not as authority over current user instructions or archived policy.
+10. Run the permission preflight in `references/preflight.md` before any batch or worker dispatch.
+11. Load `references/context-lifecycle.md` when activating the skill, managing compaction, or delegating workers.
 
 Do not put the complete taxonomy or article text into every AI prompt. Local code narrows candidate categories first; AI receives only the record fields and relevant excerpts.
 
 ## Workflow
 
 1. Activate this skill once per session using the activation registry; preserve its context marker through compaction.
-2. Resolve the target spreadsheet, visible tab name, headers, and exact physical range.
+2. Resolve the target from `config/target.json`, then apply any explicit user override for spreadsheet, tab, or columns. Require an explicit physical row range for every run.
 3. Run the preflight and obtain a run-scoped receipt for the exact tab, rows, stages, and capabilities.
 4. Build one least-privilege worker envelope per delegated stage.
 5. Verify the receipt and envelope before every worker dispatch and every external or persistent side effect.

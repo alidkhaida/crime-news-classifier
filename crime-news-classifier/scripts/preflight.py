@@ -34,6 +34,16 @@ def csv_values(value: str) -> set[str]:
     return {item.strip() for item in value.split(",") if item.strip()}
 
 
+def resolve_target(args: argparse.Namespace) -> None:
+    configured = {}
+    if args.config:
+        configured = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    args.spreadsheet_id = args.spreadsheet_id or configured.get("spreadsheet_id", "")
+    args.tab = args.tab or configured.get("tab", "")
+    if not args.spreadsheet_id or not args.tab:
+        raise ValueError("spreadsheet ID and tab are required, directly or through --config")
+
+
 def validate_scope(args: argparse.Namespace) -> tuple[set[str], set[str]]:
     stages = csv_values(args.stages) if hasattr(args, "stages") and args.stages else set()
     unknown_stages = stages - set(STAGE_CAPABILITIES)
@@ -45,6 +55,7 @@ def validate_scope(args: argparse.Namespace) -> tuple[set[str], set[str]]:
 
 
 def request(args: argparse.Namespace) -> int:
+    resolve_target(args)
     stages, required = validate_scope(args)
     if args.ttl_minutes <= 0:
         raise ValueError("--ttl-minutes must be positive")
@@ -124,8 +135,9 @@ def parser() -> argparse.ArgumentParser:
     req = sub.add_parser("request", help="create a permission receipt")
     req.add_argument("--receipt", required=True)
     req.add_argument("--run-id", required=True)
-    req.add_argument("--spreadsheet-id", required=True)
-    req.add_argument("--tab", required=True)
+    req.add_argument("--config")
+    req.add_argument("--spreadsheet-id")
+    req.add_argument("--tab")
     req.add_argument("--start-row", type=int, required=True)
     req.add_argument("--end-row", type=int, required=True)
     req.add_argument("--stages", required=True)
