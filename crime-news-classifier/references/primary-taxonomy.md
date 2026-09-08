@@ -21,10 +21,11 @@ Use one or more supported primary categories when the article's evidence fits th
 13. **Robbery, Burglary, Trespass & Home Invasion** — armed/strong-arm robbery; carjacking; home invasion; residential/business/institutional burglary; vehicle burglary; criminal trespass; restricted-area entry; burglary tools.
 14. **Cybercrime, Digital Crime & Identity Abuse** — hacking/unauthorized access; malware/ransomware/denial-of-service; phishing/email compromise; credential/SIM/account takeover; online or crypto scam; cyberstalking/doxxing; digital harassment/threats/swatting; sextortion/intimate-image abuse; database misuse; online child luring.
 15. **Stalking, Harassment, Threats & Protection-Order Violations** — stalking; repeated unwanted contact; credible threat; workplace/school stalking; GPS or location monitoring; witness intimidation/retaliation; protection/no-contact violation; bias-motivated harassment.
-16. **Human Trafficking, Smuggling & Exploitation** — sex trafficking; child commercial exploitation; forced labor; debt bondage; human smuggling; stash/harboring operation; dangerous transport; online recruitment/advertising; organized movement or concealment of contraband.
+16. **Human Trafficking, Forced Labor & Exploitation** — adult sex trafficking through force, fraud, coercion, or control; child commercial exploitation; forced labor; debt bondage; abuse of vulnerability; coercive recruitment, transport, harboring, or advertising.
 17. **Elder & Vulnerable Adult Abuse or Exploitation** — caregiver neglect; physical abuse/restraint; abandonment; institutional neglect; financial/fiduciary abuse; power-of-attorney or estate theft; targeted vulnerability scam; caregiver exploitation.
 18. **Hate Crime, Bias & Extremism** — bias-motivated assault/homicide; bias threats/harassment/stalking; targeted vandalism/arson; worship-site or cemetery desecration; extremist violence or plot.
 19. **School, Institutional & Public-Facility Crime** — school/daycare crime; hospital/nursing/group-home crime; jail/transit/library/government-facility crime; educator/coach misconduct; facility weapons or threats; institutional theft/records misuse; facility arson/vandalism.
+20. **Organized Contraband Smuggling** — organized drug smuggling; weapons/firearms smuggling; stolen-goods smuggling; currency or financial-instrument smuggling; wildlife/environmental contraband smuggling; other organized movement or concealment of illegal goods.
 
 ## Parent boundaries
 
@@ -33,7 +34,10 @@ Use one or more supported primary categories when the article's evidence fits th
 - A teen victim alone does not establish juvenile-involved crime; the alleged offender's juvenile status must be explicit.
 - A body discovery, missing person, accident, suicide, or natural death is not automatically homicide.
 - A vehicle, phone, workplace, school, jail, or hospital is not enough by itself; it must materially shape the crime.
-- Human trafficking requires exploitation, force, fraud, coercion, payment/debt, vulnerability, recruitment, transport, or another supported trafficking fact. Sexual content or CSAM alone is not trafficking.
+- Human trafficking requires force, fraud, coercion, control, debt bondage, forced labor, abuse of vulnerability, or an explicit trafficking/exploitation allegation. A minor's commercial sexual exploitation belongs here; do not treat it as voluntary commercial sex.
+- Voluntary adult prostitution or commercial sex does not qualify for the Human Trafficking parent. Noncoercive paid human smuggling or unlawful migration transport is a Bad Category under `Excluded`, not a Good Category.
+- `Organized Contraband Smuggling` requires an organized movement, concealment, border/jurisdiction route, trafficking operation, or smuggling method involving illegal goods. Ordinary local possession or transport is insufficient. Add Drugs, Weapons, Theft, or another substantive Good Category when independently supported, and add the Bad Category `Animal-Related Stories` when animal or wildlife involvement is material.
+- Kidnapping is not automatic in trafficking cases. Add it only when unlawful taking, movement, concealment, confinement, or restraint is independently supported.
 - Assign all supported categories. A primary category is not exclusive unless the evidence makes another label incidental.
 
 ## Taxonomy gaps

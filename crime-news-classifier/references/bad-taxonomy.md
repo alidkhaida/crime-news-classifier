@@ -11,7 +11,8 @@ Bad categories are editorial-routing flags. They do not mean `noncrime`, and the
 - Use title, URL slug, and description first; fetch only when unresolved.
 - Require article context for weak terms such as `sex`, `sexual`, `porn`, `convicted`, `officer`, or `suicide`.
 - Assign multiple bad categories when multiple themes are materially central.
-- Preserve `unmapped_bad_candidate` when a supported bad family lacks a maintained subcategory.
+- Preserve `unmapped_bad_candidates` when a supported bad family lacks a maintained subcategory.
+- A supported bad parent may stand alone when no maintained subcategory fits; record the subcategory gap for manual review instead of forcing a nearby label.
 - Keep allegation, charge, conviction, administrative finding, lawsuit, and commentary status distinct.
 
 ## 1. Suicide / Self-Harm
@@ -44,15 +45,15 @@ Bad categories are editorial-routing flags. They do not mean `noncrime`, and the
 
 **Boundary:** Arrest or booking into jail alone is not a jail-only incident.
 
-## 4. Animal-Only Stories
+## 4. Animal-Related Stories
 
-**Use for:** stories mainly about animal harm or animal-related violations without a material human-directed crime.
+**Use for:** stories where an animal or wildlife matter is materially involved as a victim, target, subject, instrument, contraband, or central part of the alleged operation.
 
 **Subcategories:** Animal Cruelty / Abuse; Animal Neglect / Hoarding; Animal Fighting; Wildlife / Hunting Violation; Commercial Animal Operation; Animal Torture.
 
 **Clues:** `animal cruelty`, `animal abuse`, `animal neglect`, `animal hoarding`, `dog fighting`, `dogfighting`, `cockfighting`, `illegal hunting`, `poaching`, `puppy mill`, `animal torture`.
 
-**Boundary:** Do not use Animal-Only when human assault, child endangerment, fraud, weapons, or another human-directed crime is the material center.
+**Boundary:** This category is additive. Assign it even when human assault, child endangerment, fraud, weapons, organized contraband smuggling, or another category is also supported. Do not assign it for an incidental animal mention, such as a police dog merely being present without material animal-related conduct.
 
 ## 5. White-Collar / Corporate Crime
 
@@ -74,15 +75,15 @@ Bad categories are editorial-routing flags. They do not mean `noncrime`, and the
 
 **Boundary:** Administrative action is not proof of criminal conduct. Add the factual crime category separately when supported.
 
-## 7. Prostitution / Sex Trafficking
+## 7. Prostitution / Commercial Sex
 
-**Use for:** stories mainly about commercial sex, prostitution, pimping, pandering, brothels, or human sex trafficking.
+**Use for:** stories mainly about voluntary adult commercial sex, prostitution, solicitation, pimping, pandering, or brothel operations when the available evidence does not establish forced trafficking or exploitation.
 
-**Subcategories:** Prostitution / Commercial Sex; Pimping / Pandering / Brothel Operation; Human Sex Trafficking.
+**Subcategories:** Prostitution / Commercial Sex; Solicitation / Commercial-Sex Purchase; Pimping / Pandering / Brothel Operation.
 
-**Clues:** `brothel`, `commercial sex`, `pimp`, `pimping`, `pandering`, `prostitute`, `prostitution`, `sex worker arrest`, `human sex trafficking`, `sex trafficking`, `sexual trafficking`.
+**Clues:** `brothel`, `commercial sex`, `pimp`, `pimping`, `pandering`, `prostitute`, `prostitution`, `sex worker arrest`, `solicitation`, `purchased sex`.
 
-**Boundary:** Do not infer trafficking from prostitution or sex-worker language alone; require force, fraud, coercion, exploitation, transport, recruitment, or another trafficking fact.
+**Boundary:** Do not infer trafficking from prostitution or sex-worker language alone. If force, fraud, coercion, control, debt bondage, abuse of vulnerability, or child commercial exploitation is supported, also use the Good Category `Human Trafficking, Forced Labor & Exploitation`. Do not describe a minor's commercial sexual exploitation as voluntary.
 
 ## 8. Sexual Crimes / Exploitation
 
@@ -94,10 +95,25 @@ Bad categories are editorial-routing flags. They do not mean `noncrime`, and the
 
 **Boundary:** Generic sexual language, pornography references, or consensual adult conduct do not establish a bad category without crime or exploitation context.
 
+## 9. Excluded
+
+**Use for:** narrow category-stage routing facts that the user has explicitly designated as bad, without making the future final inclusion/exclusion decision.
+
+**Subcategories:** Out of US; Noncoercive Human Smuggling / Unlawful Migration Transport.
+
+**Out of US rule:** Treat U.S. location as the routing default when title, description, and URL slug contain no credible foreign-location signal. Do not open every article to verify country. Assign `Out of US` only when metadata or the original article affirmatively places the incident outside the United States; incident location controls, not publisher location, nationality, or outlet domain. A credible but unresolved foreign hint may trigger original-article review and `needs_review`, but not a guessed `Out of US` label.
+
+**Human-smuggling rule:** Use `Noncoercive Human Smuggling / Unlawful Migration Transport` for paid or organized unlawful movement, concealment, harboring, or stash-house activity involving people when available evidence does not establish force, fraud, coercion, control, or exploitation. Forced or exploitative movement belongs in the Good Category `Human Trafficking, Forced Labor & Exploitation`.
+
+**Boundary:** `Excluded` is a Bad Category flag only. It does not set `selection_outcome`, run the future policy stage, or erase any supported Good Category.
+
 ## Overlap rules
 
 - Court / Sentencing may coexist with the underlying factual crime when the article is primarily a procedural update.
 - Prison / Jail-Only may coexist with assault, homicide, weapons, or contraband categories when both are material.
 - Officer Misconduct may coexist with a criminal category when the administrative or civil-liability issue is independently material.
-- Prostitution / Sex Trafficking and Sexual Crimes / Exploitation may both apply when commercial sex/trafficking and abuse/exploitation are independently supported.
+- Prostitution / Commercial Sex and Sexual Crimes / Exploitation may both apply when commercial sex and a separate sexual offense or exploitation theme are independently supported.
+- Human Trafficking, Forced Labor & Exploitation may coexist with Sexual Crimes / Exploitation when forced sexual exploitation and the sexual offense are independently material; do not add Prostitution / Commercial Sex merely because forced sex trafficking occurred.
+- Animal-Related Stories may coexist with any supported Good or Bad Category whenever animal or wildlife involvement is material.
+- `Excluded: Out of US` or `Excluded: Noncoercive Human Smuggling / Unlawful Migration Transport` may coexist with any independently supported category.
 - Suicide / Self-Harm may coexist with criminal conduct only when both are materially covered.

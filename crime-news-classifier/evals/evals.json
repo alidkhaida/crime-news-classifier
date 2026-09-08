@@ -24,21 +24,91 @@
     {
       "id": "policy-separate-from-recognition",
       "prompt": "Classify a federal school-funds fraud article involving wire fraud, kickbacks, an institutional setting, and arrests. Do not run the final client selection policy unless explicitly requested.",
-      "expected_output": "The result retains all factual crime and context categories, while any federal/financial outcome is stored separately as a policy-stage result.",
+      "expected_output": "The result retains all supported category-stage labels and leaves selection_outcome as not_run; it does not research or decide the future federal/financial policy outcome.",
       "assertions": [
         "Good Categories and any Bad Categories are not erased because the case may later be excluded",
-        "Federal/financial is represented as a separate policy result or review flag",
-        "The result contains evidence and case-stage information"
+        "The final policy outcome remains not_run",
+        "Missing optional policy facts do not trigger deeper research"
       ]
     },
     {
       "id": "sexual-crime-parent-and-trafficking-boundary",
       "prompt": "Classify a child-pornography possession or attempted-purchase article under the updated primary taxonomy.",
-      "expected_output": "The result uses Sexual Crimes / Exploitation when supported, does not use Human Trafficking, Smuggling & Exploitation without trafficking or commercial-exploitation evidence, and preserves an unmapped subcategory only if no maintained sexual subcategory fits.",
+      "expected_output": "The result uses the Bad Category Sexual Crimes / Exploitation when supported and does not use Human Trafficking, Forced Labor & Exploitation without force, coercion, control, child commercial exploitation, or an explicit trafficking allegation.",
       "assertions": [
-        "The updated Sexual Crimes / Exploitation parent is considered",
+        "Sexual Crimes / Exploitation is rendered as a Bad Category",
         "Human Trafficking is rejected without trafficking or commercial-exploitation evidence",
-        "A taxonomy gap is preserved as an unmapped candidate and explicit review state when the subcategory is not maintained"
+        "No neighboring Good Category is invented merely to fill the Good cell"
+      ]
+    },
+    {
+      "id": "geography-default-no-fetch",
+      "prompt": "Classify a clearly described crime whose title, description, and URL slug contain no foreign-location signal and no category ambiguity.",
+      "expected_output": "The record uses the U.S. routing default, does not fetch solely to verify country, and receives no Excluded: Out of US label.",
+      "assertions": [
+        "No geography-only fetch occurs without a credible foreign hint",
+        "Location assessment may be assumed_us",
+        "Out of US is not guessed"
+      ]
+    },
+    {
+      "id": "geography-foreign-hint",
+      "prompt": "Classify a crime record whose metadata credibly suggests that the incident occurred outside the United States but is not conclusive.",
+      "expected_output": "The original article may be fetched to resolve the foreign-location hint; Excluded: Out of US is assigned only if incident location is affirmatively confirmed.",
+      "assertions": [
+        "Publisher location and domain are not treated as incident location",
+        "A credible foreign hint can trigger targeted original-article review",
+        "Unresolved geography becomes review evidence rather than a guessed bad category"
+      ]
+    },
+    {
+      "id": "trafficking-smuggling-commercial-sex-split",
+      "prompt": "Classify three concise records: coerced forced labor, noncoercive paid human smuggling, and voluntary adult prostitution.",
+      "expected_output": "Forced labor receives the Good Human Trafficking parent; noncoercive human smuggling receives Bad Excluded; voluntary adult prostitution receives Bad Prostitution / Commercial Sex.",
+      "assertions": [
+        "Force, coercion, control, exploitation, or child commercial exploitation is required for the Good trafficking parent",
+        "Noncoercive human smuggling is not labeled Good trafficking",
+        "Voluntary adult commercial sex is not labeled trafficking"
+      ]
+    },
+    {
+      "id": "organized-contraband-additive",
+      "prompt": "Classify an organized cross-border operation concealing illegal firearms and stolen goods in cargo.",
+      "expected_output": "The record receives Organized Contraband Smuggling plus every independently supported Weapons and Theft category.",
+      "assertions": [
+        "Organized Contraband Smuggling requires operation-level movement or concealment evidence",
+        "The specific substantive offense categories are additive",
+        "Ordinary local possession would not qualify for the smuggling parent"
+      ]
+    },
+    {
+      "id": "parent-only-and-dual-unmapped",
+      "prompt": "Classify a crime with a supported Good parent and Bad parent, but no exact maintained subcategory on either side.",
+      "expected_output": "Both supported parents remain visible, both subcategory gaps appear in column P with Good/Bad prefixes and evidence notes, and needs_review is true.",
+      "assertions": [
+        "A supported parent does not require a forced subcategory",
+        "Good and bad unmapped candidates are both preserved",
+        "Any unmapped candidate requires manual review"
+      ]
+    },
+    {
+      "id": "animal-related-is-additive-bad",
+      "prompt": "Classify a story involving both a human assault and material deliberate harm to an animal.",
+      "expected_output": "The result keeps the supported human-directed Good Category and also assigns Bad Animal-Related Stories with the supported animal subcategory.",
+      "assertions": [
+        "Animal-Related Stories applies whenever animal or wildlife involvement is material",
+        "The animal bad category does not suppress supported human-directed categories",
+        "An incidental animal mention alone does not trigger the category"
+      ]
+    },
+    {
+      "id": "article-attempt-and-local-confidence-rendering",
+      "prompt": "Render two classified rows: one successfully fetched article and one article fetch that failed and needs manual intervention.",
+      "expected_output": "Column N is Yes for both attempted article paths, the failed row remains needs_review with diagnostics, evidence is in O, unmapped candidates are in P, and confidence remains only in local records.",
+      "assertions": [
+        "Fetched, fetch_failed, and infrastructure_error statuses render Yes in column N",
+        "A failed attempt requires needs_review and retained diagnostics",
+        "The six Sheet values are K:P and contain no confidence value"
       ]
     }
   ]

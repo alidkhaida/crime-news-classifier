@@ -4,6 +4,8 @@ Load this reference only when the user asks which classified cases qualify for t
 
 No current replacement policy source has been approved yet. Do not load or apply the legacy files under `archive/` for final selection. Keep factual categories even when a future policy outcome is excluded; stop and request the current policy source before running this stage.
 
+The categorization skill may emit narrow Bad Category flags such as `Excluded: Out of US` or `Excluded: Noncoercive Human Smuggling / Unlawful Migration Transport`. These are category-stage routing labels, not final policy outcomes. A future policy skill will research and decide only the selected categories placed in its scope; do not run that deeper check for every classified record.
+
 Typical separate outcomes include: `out of US`, `popular/high-profile`, `political/federal`, `general news`, `aggregate story`, `accident / non-crime`, `victim follow-up`, `suspect not found`, `no arrest`, `unable to access`, `not enough info`, `suspect died / no arrest`, `court update`, `old case / court`, `minor / weak case`, and `citation only`.
 
 Important boundaries:

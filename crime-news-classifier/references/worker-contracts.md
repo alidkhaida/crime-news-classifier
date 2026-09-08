@@ -51,25 +51,27 @@ Forbidden: article classification, broad tab scans, guessed tab names, writes ou
 Required write sequence:
 
 1. Resolve spreadsheet ID, visible tab title, and sheet ID from metadata.
-2. Read source and target cells immediately before the write.
-3. Preflight row count, column count, physical row order, and target identity.
-4. Write one precise rectangular range.
-5. Reread the exact written range and source identity cells.
+2. Read source cells, K:P headers, and target cells immediately before the write. Confirm the live headers match the configured output mapping.
+3. Preflight row count, six-column K:P width, semantic header order, physical row order, and target identity. Stop on any header or position mismatch.
+4. Write one precise K:P rectangle using the current post-deletion layout.
+5. Reread the exact written K:P range and source identity cells.
 6. Save `readback_verified` or a row-specific conflict.
+
+Sheet rendering rules: column N writes `Yes` when the controller's final local record has `article.status: fetched`, `fetch_failed`, or `infrastructure_error`; valid reused cached article text counts as `fetched`. It writes `-` only for `not_needed`. N records that the article path was attempted, not that it necessarily succeeded, and must not be cleared merely because classification is complete. Column O is evidence and P is unmapped candidates. The deleted confidence field has no Sheet column; confidence stays local.
 
 ## Metadata worker contract
 
 Input: physical row, URL, title, description, URL slug, and relevant category index.
 
-Output: `crime`, `noncrime`, or `needs_article`; candidate categories; evidence phrases; confidence; and routing reason.
+Output: `crime`, `noncrime`, or `needs_article`; candidate categories; evidence phrases; confidence; routing reason; and an inexpensive location assessment based on title, description, and URL slug.
 
-It must not infer detailed facts absent from metadata. It may use an explicit URL slug clue, but a vague slug is not proof.
+It must not infer detailed facts absent from metadata. It may use an explicit URL slug clue, but a vague slug is not proof. In the absence of a credible foreign-location signal it uses the U.S. routing default without requesting an article solely for geography.
 
 ## Article-fetch worker contract
 
-Input: only rows marked `needs_article` and their original URLs.
+Input: only rows marked `needs_article` for category ambiguity/conflict/gap or credible foreign-location hints, and their original URLs. Missing optional case-stage or future-policy facts are not fetch reasons.
 
-Output: fetch manifest, final URL, status, content hash, saved text path, identity checks, and infrastructure error details.
+Output: fetch manifest, final URL, status, content hash, saved text path, identity checks, and failure or infrastructure-error details. A `fetch_failed` or `infrastructure_error` result must set `needs_review: true` so column N can show the attempted check while manual intervention remains explicit.
 
 It must not turn blocked access, DNS failure, browser failure, or rate limiting into an article decision.
 
@@ -77,17 +79,17 @@ It must not turn blocked access, DNS failure, browser failure, or rate limiting 
 
 Input: metadata result or saved article text, relevant category references, and output schema.
 
-Output: all supported Good Categories, context categories, subcategories, case stage, allegation status, evidence spans, confidence, and good unmapped candidates.
+Output: all supported Good Categories, context categories, subcategories, readily available case stage/allegation/location clues, evidence spans, confidence, and good unmapped candidates.
 
 Main categories are additive. A formal charge is evidence, not a limit on factual category assignment.
 
-The category worker must fail closed on taxonomy gaps: it must not select a neighboring or “closest” parent merely to avoid a blank category. If no maintained parent definition fits, return no category, `needs_review: true`, and an unmapped candidate with evidence. Sexual Crimes / Exploitation or CSAM evidence does not qualify for Human Trafficking, Smuggling & Exploitation without evidence of trafficking or commercial exploitation.
+The category worker must fail closed on taxonomy gaps: it must not select a neighboring or “closest” parent merely to avoid a blank category. A supported parent may stand alone; if its subcategory is missing, retain the parent, set `needs_review: true`, and add an unmapped subcategory candidate with evidence. Human Trafficking, Forced Labor & Exploitation requires force, fraud, coercion, control, forced labor, debt bondage, abuse of vulnerability, child commercial exploitation, or an explicit trafficking/exploitation allegation. Organized Contraband Smuggling requires an organized illegal-goods movement or concealment operation, not ordinary possession or transport.
 
 ## Bad-category worker contract
 
 Input: the assigned record, metadata or saved article evidence, and the relevant sections of `references/bad-taxonomy.md`.
 
-Output: every supported Bad Category and bad subcategory, bad evidence phrases, confidence, and `unmapped_bad_candidates` when a supported bad family lacks a maintained subcategory.
+Output: every supported Bad Category and bad subcategory, bad evidence phrases, confidence, and `unmapped_bad_candidates` when a supported bad family lacks a maintained subcategory. It assigns `Animal-Related Stories` whenever animal or wildlife involvement is material, even when human-directed crime also supports other categories; incidental mentions do not qualify. It applies `Excluded: Out of US` only from affirmative incident-location evidence and uses `Excluded: Noncoercive Human Smuggling / Unlawful Migration Transport` when organized human movement is supported without trafficking/exploitation evidence.
 
 It must not change `crime_status`, Good Categories, source fields, or final selection outcome. It must not infer a bad category from a keyword alone.
 

@@ -41,8 +41,13 @@ def resolve_target(args: argparse.Namespace) -> None:
         configured = json.loads(Path(args.config).read_text(encoding="utf-8"))
     args.spreadsheet_id = args.spreadsheet_id or configured.get("spreadsheet_id", "")
     args.tab = args.tab or configured.get("tab", "")
+    args.source_columns = configured.get("source_columns", "")
+    args.output_columns = configured.get("output_columns", "")
+    args.output_mapping = configured.get("output_mapping", {})
     if not args.spreadsheet_id or not args.tab:
         raise ValueError("spreadsheet ID and tab are required, directly or through --config")
+    if args.config and (not args.source_columns or not args.output_columns or not args.output_mapping):
+        raise ValueError("configured source_columns, output_columns, and output_mapping are required")
 
 
 def validate_scope(args: argparse.Namespace) -> tuple[set[str], set[str]]:
@@ -83,6 +88,9 @@ def request(args: argparse.Namespace) -> int:
             "tab": args.tab,
             "start_row": args.start_row,
             "end_row": args.end_row,
+            "source_columns": args.source_columns,
+            "output_columns": args.output_columns,
+            "output_mapping": args.output_mapping,
         },
         "stages": sorted(stages),
         "requested_capabilities": sorted(granted & CAPABILITIES),

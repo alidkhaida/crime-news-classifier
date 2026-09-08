@@ -40,3 +40,21 @@ This is local project memory for tested workflow decisions and observed edge cas
 - Whether production Sheets should retain the confidence column or keep it only in local state.
 - Which unmapped candidates should be promoted after frequency and human review.
 - Runtime-specific enforcement for per-worker tool allowlists.
+
+### 2026-09-08 — category-stage boundaries and routing
+
+- Stable: treat U.S. location as the metadata routing default; do not fetch every article for geography. Review the original article only for a credible foreign-location hint, and assign `Excluded: Out of US` only from affirmative incident-location evidence.
+- Stable: forced/coercive human trafficking, forced labor, and exploitation are Good Categories. Noncoercive paid human smuggling is `Excluded: Noncoercive Human Smuggling / Unlawful Migration Transport`; voluntary adult commercial sex is `Prostitution / Commercial Sex`.
+- Stable: organized smuggling of illegal goods is the separate Good Category `Organized Contraband Smuggling` and is additive with supported Drugs, Weapons, Theft, or other substantive categories.
+- Stable: a supported good or bad parent may stand without a subcategory. Preserve missing good and bad parent/subcategory candidates separately, render both in column Q with evidence notes, and set `needs_review: true`; never force a neighboring label.
+- Stable: category classification stops when metadata or the assigned original article supplies enough category evidence. Missing optional policy, stage, allegation, location, arrest, custody, or footage details do not trigger deep research; later selected-category policy skills may reuse saved article text and perform their own research.
+
+### 2026-09-08 — animal routing and Sheet attempt history
+
+- Stable: assign the Bad Category `Animal-Related Stories` whenever animal or wildlife involvement is material. It is additive with supported human-directed, contraband, or other categories; incidental animal mentions do not qualify.
+- Stable: column N renders `Yes` whenever the article path was attempted, whether it succeeded (`fetched`) or failed (`fetch_failed` or `infrastructure_error`). Failures require `needs_review: true` and retained diagnostics for manual intervention.
+- Stable: confidence remains in local structured records for routing and audit. Column O renders `-` and is not used for confidence output.
+
+### 2026-09-08 — post-deletion Sheet layout correction
+
+- Stable: the user deleted the former Sheet confidence column. The classifier now writes one contiguous K:P range: K crime status, L Good Categories, M Bad Categories, N article attempted, O evidence, and P unmapped candidates. The prior instruction to render a dash in the old confidence column is superseded; confidence remains local and has no Sheet destination.

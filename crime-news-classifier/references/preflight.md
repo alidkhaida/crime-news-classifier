@@ -19,8 +19,8 @@ Resolve the default spreadsheet and tab from the ignored local file `config/targ
 ## Required behavior
 
 1. Build the smallest capability request from the requested stages. Classification-only does not imply `sheet_write`.
-2. Show the user the spreadsheet ID, visible tab, exact physical rows, requested stages, capabilities, and whether article fetching may occur.
-3. Ask for approval for each capability not already approved for this exact run scope. A write approval must name the destination tab and physical output range.
+2. Show the user the spreadsheet ID, visible tab, exact physical rows, source columns, output range, requested stages, capabilities, and whether article fetching may occur. The configured classifier output is K:P in the current post-deletion layout.
+3. Ask for approval for each capability not already approved for this exact run scope. A write approval must name the destination tab and exact physical K:P output range.
 4. Save the result as a run-scoped receipt. The receipt must include the exact row bounds, approved capabilities, stages, skill version, and timestamp.
 5. Before each stage, verify the receipt still covers the requested capability, tab, rows, and stage. Stop on denial, expiry, scope mismatch, or missing receipt.
 6. Pass workers only their role allowlist intersected with the approved capabilities. A worker cannot grant itself additional capabilities.

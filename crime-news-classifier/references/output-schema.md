@@ -9,7 +9,8 @@
   "physical_row": 0,
   "input_fingerprint": "string",
   "metadata_decision": {"status":"crime | noncrime | needs_article","reason":"string","confidence":0.0,"evidence":["string"]},
-  "article": {"status":"not_needed | fetched | fetch_failed | infrastructure_error","final_url":"string|null","content_hash":"string|null","text_path":"string|null"},
+  "location_assessment": {"status":"assumed_us | confirmed_us | confirmed_non_us | unresolved_foreign_hint","evidence":["string"]},
+  "article": {"status":"not_needed | fetched | fetch_failed | infrastructure_error","final_url":"string|null","content_hash":"string|null","text_path":"string|null","error_type":"string|null","error_detail":"string|null"},
   "good_categories": {"Main Category Name":["Subcategory Name"]},
   "bad_categories": {"Bad Category Name":["Bad Subcategory Name"]},
   "unmapped_candidates": [{"parent_category":"string","candidate_name":"string","evidence":"string","confidence":0.0}],
@@ -35,12 +36,22 @@ Classifier output columns:
 K Crime Status
 L Good Categories
 M Bad Categories
-N Needs Article
-O Confidence
-P Evidence
-Q Unmapped Candidates
+N Article Check Attempted (existing header may still say Needs Article)
+O Evidence
+P Unmapped Candidates
 ```
 
-Only A:D are read as source columns and only K:Q are written by the current classifier. E:I and all other columns are outside the contract. Columns L and M each render one line per distinct category; subcategories under one category are comma-separated. Codes are local metadata only and must not appear in user-facing cells.
+Only A:D are read as source columns, and only K:P are written by the classifier. The former confidence column was deleted, shifting evidence to O and unmapped candidates to P. Columns L and M each render one line per distinct category; subcategories under one category are comma-separated. Column N is a persistent article-attempt indicator: render `Yes` when the final local `article.status` is `fetched`, `fetch_failed`, or `infrastructure_error`; valid reused saved article text counts as `fetched`. Render `-` only for `not_needed`. `Yes` therefore means the workflow attempted the article path, not necessarily that text was obtained. A failed attempt requires `needs_review: true`; retain its diagnostics locally and include concise failure evidence in O when useful for manual intervention. A completed classification must not clear a prior `Yes`. The numeric confidence remains local only and has no Sheet destination. For every classifier field in K:P with no value, the Sheet display value is `-`; local structured records may retain empty strings/nulls. The dash is a display sentinel and must not be interpreted as a category, subcategory, or evidence. Codes are local metadata only and must not appear in user-facing cells.
 
-`crime` records should have at least one good category. The only exception is an unresolved good-taxonomy gap: `good_categories` must be empty, `needs_review` must be true, and `unmapped_candidates` plus an evidence/review reason must be present. Bad categories are independent editorial flags and may be present even when the good-category cell is empty. `noncrime` records normally have empty good categories; bad categories may still be recorded when supported. `needs_article` may have candidate categories but must not be presented as final.
+`crime` records must have at least one supported Good Category or Bad Category. If neither side has a supported parent, `needs_review` must be true and at least one good or bad unmapped parent candidate with evidence must be present. A supported parent may be rendered without a subcategory; preserve the missing subcategory candidate and set `needs_review: true` rather than forcing a neighboring label. `noncrime` records normally have empty Good Categories locally and `-` in the Sheet; Bad Categories may still be recorded when supported. `needs_article` may have candidate categories but must not be presented as final.
+
+Column P renders both unmapped arrays, one candidate per line:
+
+```text
+Good parent: Proposed Parent — concise evidence/review note
+Good subcategory under Supported Parent: Proposed Subcategory — concise evidence/review note
+Bad parent: Proposed Parent — concise evidence/review note
+Bad subcategory under Supported Parent: Proposed Subcategory — concise evidence/review note
+```
+
+Use only the applicable prefix. Any nonempty good or bad unmapped array requires `needs_review: true`. Optional `case_stage`, `allegation_status`, and location clues are populated only from readily available evidence; missing optional detail does not by itself trigger article fetching.

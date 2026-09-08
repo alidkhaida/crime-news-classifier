@@ -3,7 +3,15 @@
   "spreadsheet_id": "REPLACE_WITH_YOUR_ID",
   "tab": "REPLACE_WITH_TAB_NAME",
   "source_columns": "A:D",
-  "output_columns": "K:Q",
+  "output_columns": "K:P",
+  "output_mapping": {
+    "crime_status": "K",
+    "good_categories": "L",
+    "bad_categories": "M",
+    "article_attempted": "N",
+    "evidence": "O",
+    "unmapped_candidates": "P"
+  },
   "require_explicit_physical_rows": true,
   "allow_user_override": true
 }
